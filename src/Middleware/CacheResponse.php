@@ -54,6 +54,22 @@ class CacheResponse
      */
     protected function shouldCache(Request $request, Response $response)
     {
-        return $request->isMethod('GET') && $response->getStatusCode() == 200;
+        $_shouldCache = ($request->isMethod('GET') && $response->getStatusCode() == 200);
+        if(!$_shouldCache) {
+            return false;
+        }
+
+        /**
+         * Does not cache when empty settings.
+         */
+        $allowed_route_names = config('page-cache.allowed_route_names');
+        if(!is_array($allowed_route_names)||empty($allowed_route_names)) {
+            return false;
+        }
+
+        $name = $request->route()->getName();
+        $_allowCache = in_array($name,$allowed_route_names);
+
+        return $_allowCache;
     }
 }
