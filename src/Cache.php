@@ -229,8 +229,18 @@ class Cache
     protected function getDirectoryAndFileNames($request)
     {
         $segments = explode('/', ltrim($request->getPathInfo(), '/'));
+        $last_path = array_pop($segments);
 
-        $file = $this->aliasFilename(array_pop($segments)).'.html';
+        $queryString = $request->getQueryString();
+        parse_str($queryString,$query);
+        ksort($query,SORT_REGULAR|SORT_DESC);
+        $queryResortString = http_build_query($query);
+        $queryResortString = str_replace('&','--',$queryResortString);
+        $queryResortString = str_replace('=','__',$queryResortString);
+        if(strlen($queryResortString)) {
+            $last_path = $last_path."--".$queryResortString;
+        }
+        $file = $this->aliasFilename($last_path).'.html';
 
         return [$this->getCachePath(implode('/', $segments)), $file];
     }
