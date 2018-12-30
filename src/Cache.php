@@ -211,6 +211,28 @@ class Cache
     }
 
     /**
+     * @param  \Illuminate\Http\Request  $request
+     */
+    public function forgetByRequest(Request $request) {
+        $slug = $this->getSlug($request);
+        $this->forget($slug);
+    }
+
+    /**
+     * @param  \Illuminate\Http\Request  $request
+     */
+    public function getSlug(Request $request) {
+        list($path, $file) = $this->getDirectoryAndFileNames($request);
+        $base = $this->getCachePath();
+
+        $_file = str_replace('.html','',$file);
+        $_path = str_replace($base,'',$path);
+
+        $slug = str_replace('//','/',"{$_path}/{$_file}");
+        return $slug;
+    }
+
+    /**
      * Fully clear the cache directory.
      *
      * @return bool
@@ -234,6 +256,13 @@ class Cache
         $queryString = $request->getQueryString();
         parse_str($queryString,$query);
         ksort($query,SORT_REGULAR|SORT_DESC);
+
+        $forget_key = config('page-cache.forget_cache_query_key');
+
+        if(!empty($query)&&array_key_exists($forget_key,$query)) {
+            unset($query[$forget_key]);
+        }
+
         $queryResortString = http_build_query($query);
         if(strlen($queryResortString)>0) {
             $fileHash = md5($queryResortString);
