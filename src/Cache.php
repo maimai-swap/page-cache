@@ -162,6 +162,44 @@ class Cache
     }
 
     /**
+     * Check the response cache file exist.
+     *
+     * @param  \Symfony\Component\HttpFoundation\Request  $request
+     * @return bool
+     */
+    public function hasCache(Request $request) {
+        $full_path = $this->getCacheFilePath($request);
+        if(file_exists($full_path)){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @param Request $request
+     * @return bool|string
+     */
+    public function getCacheContent(Request $request) {
+        $content = '';
+        $file = $this->getCacheFilePath($request);
+        if(file_exists($file)) {
+            $content = file_get_contents($file);
+        }
+        return $content;
+    }
+
+    /**
+     * Get file full path
+     * @param Request $request
+     * @return string
+     */
+    protected function getCacheFilePath(Request $request) {
+        list($path, $file) = $this->getDirectoryAndFileNames($request);
+        $full_path = $path."/".$file;
+        return $full_path;
+    }
+
+    /**
      * Remove the cached file for the given slug.
      *
      * @param  string  $slug
