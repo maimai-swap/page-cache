@@ -223,7 +223,7 @@ class Cache
     /**
      * Get the names of the directory and file.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request $request
      * @return array
      */
     protected function getDirectoryAndFileNames($request)
@@ -235,10 +235,9 @@ class Cache
         parse_str($queryString,$query);
         ksort($query,SORT_REGULAR|SORT_DESC);
         $queryResortString = http_build_query($query);
-        $queryResortString = str_replace('&','--',$queryResortString);
-        $queryResortString = str_replace('=','__',$queryResortString);
-        if(strlen($queryResortString)) {
-            $last_path = $last_path."--".$queryResortString;
+        if(strlen($queryResortString)>0) {
+            $fileHash = md5($queryResortString);
+            $last_path = $last_path."--".$fileHash;
         }
         $file = $this->aliasFilename($last_path).'.html';
 
