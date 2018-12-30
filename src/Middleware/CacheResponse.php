@@ -4,7 +4,7 @@ namespace Silber\PageCache\Middleware;
 
 use Closure;
 use Silber\PageCache\Cache;
-use Symfony\Component\HttpFoundation\Request;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class CacheResponse
@@ -29,7 +29,8 @@ class CacheResponse
     /**
      * Handle an incoming request.
      *
-     * @param  \Symfony\Component\HttpFoundation\Request  $request
+     *
+     * @param  \Illuminate\Http\Request $request
      * @param  \Closure  $next
      * @return mixed
      */
@@ -47,7 +48,7 @@ class CacheResponse
     /**
      * Determines whether the given request/response pair should be cached.
      *
-     * @param  \Symfony\Component\HttpFoundation\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @param  \Symfony\Component\HttpFoundation\Response  $response
      * @return bool
      */
