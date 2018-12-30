@@ -215,8 +215,6 @@ class Cache
      */
     protected function getDefaultCachePath()
     {
-        if ($this->container && $this->container->bound('path.public')) {
-            return $this->container->make('path.public').'/page-cache';
-        }
+        return config('page-cache.save_path');
     }
 }
